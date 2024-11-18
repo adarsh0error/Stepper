@@ -1,0 +1,51 @@
+int stepPin1 = 8;  //pins for both the steppers
+int dirPin1 = 9;
+int stepPin2 = 6;
+int dirPin2 = 7;
+String inputData = "";
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(stepPin1, OUTPUT);
+  pinMode(dirPin1, OUTPUT);
+  pinMode(stepPin2, OUTPUT);
+  pinMode(dirPin2, OUTPUT);
+}
+
+void loop() {
+  // format in which user has to give input :-
+ // 1000s100 - 1000 (steps) s (direction) 100 (delay)
+
+  // Check if any data is available in Serial
+  if (Serial.available()>0) {
+    // Read all data available in Serial as String
+    inputData = Serial.readString();
+
+    //Retrieve data based on input sample
+    int steps = inputData.substring(0,4).toInt();
+    String dir = inputData.substring(4,5);
+    int del = inputData.substring(5).toInt();
+    Serial.println(steps);
+    Serial.println(dir);
+    Serial.println(del);
+
+    // Set Direction
+    if(dir == "f"){
+      digitalWrite(dirPin1, HIGH);
+      digitalWrite(dirPin2, LOW);
+    }
+    else if(dir == "s"){
+      digitalWrite(dirPin1, LOW);
+      digitalWrite(dirPin2, HIGH);
+    }
+    for (int i= 0; i<steps; i++){
+      digitalWrite(stepPin1, HIGH); 
+      digitalWrite(stepPin2, HIGH);
+      delayMicroseconds(del);
+      digitalWrite(stepPin1, LOW);
+      digitalWrite(stepPin2, LOW);
+      delayMicroseconds(del);
+      
+    } 
+  }
+}
